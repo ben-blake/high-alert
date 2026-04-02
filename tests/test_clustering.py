@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from sklearn.datasets import make_blobs
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.clustering import reduce_dimensions, cluster_hdbscan, cluster_kmeans
 
 CONFIG = {
@@ -69,8 +69,7 @@ def test_label_clusters_with_llm_mock():
     })
     cluster_labels = np.array([0] * 15 + [1] * 15)
 
-    mock_response = MagicMock()
-    mock_response.message.content = MOCK_LLM_RESPONSE
+    mock_response = {"message": {"content": MOCK_LLM_RESPONSE}}
 
     with patch("src.clustering.ollama.chat", return_value=mock_response):
         result = label_clusters_with_llm(df, cluster_labels, embeddings, CONFIG)

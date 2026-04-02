@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.temporal import (
     compute_stage_distribution,
     compute_drug_trends,
@@ -59,8 +59,7 @@ def test_generate_spike_narratives_mock():
     config = {"llm": {"model": "llama3.1:8b", "temperature": 0.1, "spike_sample_size": 5}}
     spike_quarters = ["2013-Q1"]
 
-    mock_resp = MagicMock()
-    mock_resp.message.content = "During Q1 2013, relapse language spiked. Reviews described medication access issues. This aligned with national opioid availability changes."
+    mock_resp = {"message": {"content": "During Q1 2013, relapse language spiked. Reviews described medication access issues. This aligned with national opioid availability changes."}}
 
     with patch("src.temporal.ollama.chat", return_value=mock_resp):
         narratives = generate_spike_narratives(df, spike_quarters, config)

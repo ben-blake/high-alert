@@ -62,7 +62,7 @@ def generate_cluster_summaries(
         )
         sections.append(f"## {stage_name} ({stage_info.get('ttm_stage', '')})")
         sections.append(f"**Reviews:** {count} ({pct:.1f}% of corpus) | **Risk:** {stage_info.get('risk_level', 'MODERATE')}\n")
-        sections.append(response.message.content.strip())  # type: ignore[union-attr]
+        sections.append(response["message"]["content"].strip())  # type: ignore[index]
         sections.append("")
 
     return "\n\n".join(sections)

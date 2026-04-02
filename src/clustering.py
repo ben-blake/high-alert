@@ -97,7 +97,7 @@ def label_clusters_with_llm(
             options={"temperature": config["llm"]["temperature"]},
         )
         try:
-            parsed = json.loads(response.message.content)  # type: ignore[union-attr]
+            parsed = json.loads(response["message"]["content"])  # type: ignore[index]
         except json.JSONDecodeError:
             parsed = {
                 "stage_name": f"CLUSTER_{cluster_id}",

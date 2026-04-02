@@ -103,7 +103,7 @@ def generate_spike_narratives(
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": temperature},
         )
-        narratives[quarter] = response.message.content.strip()  # type: ignore[union-attr]
+        narratives[quarter] = response["message"]["content"].strip()  # type: ignore[index]
 
     return narratives
 
