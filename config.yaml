@@ -93,6 +93,11 @@ baseline:
     - "clean and sober"
     - "years sober"
     - "months sober"
+    - "smoke free"       # 477 occurrences, 95% in high-rated reviews
+    - "quit smoking"     # 410 occurrences, 86% in high-rated reviews
+    - "stopped smoking"  # 124 occurrences, 92% in high-rated reviews
+    - "no more cravings" # unambiguously positive
+    - "cravings are gone"
 
 temporal:
   spike_window: 4
