@@ -6,12 +6,12 @@ import yaml
 
 
 def load_raw(config: dict) -> pd.DataFrame:
-    """Load and merge train/test TSV files into a single DataFrame."""
+    """Load and merge train/test CSV files into a single DataFrame."""
     raw_dir = config["data"]["raw_dir"]
     train_path = os.path.join(raw_dir, config["data"]["train_file"])
     test_path = os.path.join(raw_dir, config["data"]["test_file"])
-    train = pd.read_csv(train_path, sep="\t", index_col=0)
-    test = pd.read_csv(test_path, sep="\t", index_col=0)
+    train = pd.read_csv(train_path, index_col=0)
+    test = pd.read_csv(test_path, index_col=0)
     df = pd.concat([train, test], ignore_index=True)
     return df
 

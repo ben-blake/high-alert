@@ -1,5 +1,8 @@
 # High Alert: Recovery Trajectory Staging System
 
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
+
 AI-driven pipeline for detecting substance abuse risk signals from addiction treatment drug reviews. Discovers recovery stages from patient language using HDBSCAN clustering, validates them against the Transtheoretical Model (TTM), and surfaces temporal risk signals for public health analysts.
 
 **NRT AI Challenge — CS 5542 Big Data Analytics | UMKC Spring 2026**
@@ -33,7 +36,7 @@ kaggle datasets download jessicali9530/kuc-hackathon-winter-2018 -p data/raw --u
 
 # Option B: Manual download
 # https://www.kaggle.com/datasets/jessicali9530/kuc-hackathon-winter-2018
-# Place drugsComTrain_raw.tsv and drugsComTest_raw.tsv in data/raw/
+# Place drugsComTrain_raw.csv and drugsComTest_raw.csv in data/raw/
 ```
 
 ## Run
@@ -98,4 +101,4 @@ Raw TSV → Ingest+Filter → Preprocess → Embed → Cluster → Stage Label
 - LLM outputs framed as population-level trends, not individual diagnosis.
 
 ## Team
-- Ben Blake (MSCS, UMKC)
+- Ben Blake <ben.blake@umkc.edu>

@@ -14,8 +14,8 @@ Source: https://www.kaggle.com/datasets/jessicali9530/kuc-hackathon-winter-2018
    ```
 
 ### Files Expected in `data/raw/`
-- `drugsComTrain_raw.tsv` — training split (~161k rows)
-- `drugsComTest_raw.tsv` — test split (~53k rows)
+- `drugsComTrain_raw.csv` — training split (~161k rows)
+- `drugsComTest_raw.csv` — test split (~53k rows)
 
 ### Columns
 - `drugName` — name of the drug reviewed
