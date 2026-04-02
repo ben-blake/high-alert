@@ -48,12 +48,21 @@ def cluster_kmeans(embeddings_reduced: np.ndarray, n_clusters: int, config: dict
 
 
 STAGE_LABEL_PROMPT = """You are a public health analyst classifying addiction treatment patient reviews.
-Below are {n} reviews (with patient ratings 1-10) from one group discovered through semantic clustering.
+Below are {n} reviews (with patient ratings 1-10) from one cluster discovered through semantic clustering.
 
-Reviews:
+Cluster statistics:
+- Size: {cluster_size} reviews
+- Top drugs: {top_drugs}
+- Top conditions: {top_conditions}
+- Median rating: {median_rating:.1f}/10
+
+Representative reviews:
 {reviews}
 
-Classify this group using the Transtheoretical Model (TTM). Use the full spectrum:
+Names already used by other clusters (you MUST NOT reuse any of these):
+{used_names}
+
+Classify this group using the Transtheoretical Model (TTM):
 - Pre-Contemplation: not yet considering change, in denial, or unaware of need
 - Contemplation: aware of problem, thinking about change, ambivalent
 - Preparation: committed to change, early medication use, may still have slip-ups
@@ -66,17 +75,15 @@ Risk level criteria:
 - MODERATE: active struggle, uncertain, side effects threatening adherence, early recovery
 - LOW: stable, long-term success, confident in sobriety
 
-Note: if reviews are mixed (some hopeful, some struggling), reflect that in the risk level.
-
 CRITICAL — stage_name rules:
-- Must be UNIQUE and SPECIFIC to this cluster's dominant substance + behavior pattern
-- Format: SUBSTANCE_BEHAVIOR (e.g., SMOKING_LONG_TERM_SUCCESS, SUBOXONE_EARLY_TAPER, NALTREXONE_STABLE, ALCOHOL_WITHDRAWAL_CRISIS, OPIOID_MAINTENANCE_STABLE)
-- NEVER use a bare TTM stage name alone (MAINTENANCE, ACTION, etc.) — always qualify with substance or pattern
-- If the group spans multiple substances, pick the most dominant one
+- Must be UNIQUE — not in the "already used" list above
+- Must be SPECIFIC: use the dominant drug brand or substance + the distinguishing behavioral detail
+- Format: DRUG_DETAIL (e.g., CHANTIX_SIDE_EFFECT_QUITTERS, SUBOXONE_LONG_TAPER, NALTREXONE_VIVITROL_STABLE, LIBRIUM_ALCOHOL_DETOX)
+- If two clusters share a drug, differentiate by the behavioral nuance (duration, side effects, relapse history, etc.)
 
 Respond with ONLY valid JSON, no other text:
 {{
-  "stage_name": "SUBSTANCE_BEHAVIOR_IN_CAPS",
+  "stage_name": "DRUG_DETAIL_IN_CAPS",
   "ttm_stage": "One of: Pre-Contemplation, Contemplation, Preparation, Action, Maintenance, Relapse",
   "description": "One sentence: what specific behavioral pattern defines this group?",
   "risk_level": "One of: HIGH, MODERATE, LOW"
@@ -99,11 +106,25 @@ def label_clusters_with_llm(
     n_samples = config["clustering"]["stage_sample_size"]
     model = config["llm"]["model"]
     results: dict[int, dict] = {}
+    used_names: list[str] = []
 
     for cluster_id in unique_clusters:
         mask = cluster_labels == cluster_id
         cluster_embeddings = embeddings[mask]
         cluster_indices = np.where(mask)[0]
+        cluster_df = df.iloc[cluster_indices]
+
+        # Cluster statistics for richer prompt context
+        cluster_size = len(cluster_indices)
+        top_drugs = ", ".join(
+            f"{drug} ({count})"
+            for drug, count in cluster_df["drugName"].value_counts().head(3).items()
+        )
+        top_conditions = ", ".join(
+            f"{cond} ({count})"
+            for cond, count in cluster_df["condition"].value_counts().head(3).items()
+        )
+        median_rating = float(cluster_df["rating"].median())
 
         centroid = cluster_embeddings.mean(axis=0, keepdims=True)
         sims = cosine_similarity(cluster_embeddings, centroid).flatten()
@@ -115,9 +136,15 @@ def label_clusters_with_llm(
             for _, row in sample_rows.iterrows()
         )
 
+        used_str = ", ".join(used_names) if used_names else "(none yet)"
         prompt = STAGE_LABEL_PROMPT.format(
             n=len(sample_rows),
+            cluster_size=cluster_size,
+            top_drugs=top_drugs,
+            top_conditions=top_conditions,
+            median_rating=median_rating,
             reviews=reviews_text,
+            used_names=used_str,
         )
         print(f"Labeling cluster {cluster_id}... ", end="", flush=True, file=sys.stderr)
         client = Groq()
@@ -135,6 +162,7 @@ def label_clusters_with_llm(
         print(file=sys.stderr)
         try:
             parsed = json.loads(content)
+            used_names.append(parsed.get("stage_name", ""))
         except json.JSONDecodeError:
             parsed = {
                 "stage_name": f"CLUSTER_{cluster_id}",

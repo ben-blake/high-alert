@@ -65,17 +65,19 @@ def test_label_clusters_with_llm_mock():
     df = pd.DataFrame({
         "clean_review": [f"review {i}" for i in range(n)],
         "drugName": ["Suboxone"] * n,
+        "condition": ["Opiate Dependence"] * n,
         "rating": [8] * n,
     })
     cluster_labels = np.array([0] * 15 + [1] * 15)
 
     from unittest.mock import MagicMock
-    mock_chunk = MagicMock()
-    mock_chunk.choices[0].delta.content = MOCK_LLM_RESPONSE
-    mock_stream = iter([mock_chunk])
+    def make_stream():
+        mock_chunk = MagicMock()
+        mock_chunk.choices[0].delta.content = MOCK_LLM_RESPONSE
+        return iter([mock_chunk])
 
     with patch("src.clustering.Groq") as MockGroq:
-        MockGroq.return_value.chat.completions.create.return_value = mock_stream
+        MockGroq.return_value.chat.completions.create.side_effect = lambda **_: make_stream()
         result = label_clusters_with_llm(df, cluster_labels, embeddings, CONFIG)
 
     assert 0 in result
