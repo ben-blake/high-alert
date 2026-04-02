@@ -71,7 +71,7 @@ kaggle datasets download jessicali9530/kuc-hackathon-winter-2018 -p data/raw --u
 
 ## Pipeline Architecture
 ```
-Raw TSV → Ingest+Filter → Preprocess → Embed → Cluster → Stage Label
+Raw CSV → Ingest+Filter → Preprocess → Embed → Cluster → Stage Label
                                                           ↓
                                                Three-Approach Comparison
                                                (baseline / cluster / LLM)
