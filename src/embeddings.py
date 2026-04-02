@@ -18,7 +18,7 @@ def generate_embeddings(texts: list[str], model_name: str, batch_size: int) -> n
         convert_to_numpy=True,
         normalize_embeddings=True,
     )
-    return embeddings.astype(np.float32)
+    return np.array(embeddings).astype(np.float32)
 
 
 def load_or_generate_embeddings(

@@ -27,7 +27,7 @@ def filter_addiction_related(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     condition_mask = cond_col.apply(lambda x: any(c in x for c in conditions))
     drug_mask = drug_col.apply(lambda x: any(d in x for d in drugs))
 
-    return df[condition_mask | drug_mask].reset_index(drop=True)
+    return pd.DataFrame(df[condition_mask | drug_mask]).reset_index(drop=True)
 
 
 def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:

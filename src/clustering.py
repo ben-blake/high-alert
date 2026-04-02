@@ -19,7 +19,7 @@ def reduce_dimensions(embeddings: np.ndarray, n_components: int, config: dict) -
         random_state=config["clustering"]["umap_random_seed"],
         metric="cosine",
     )
-    return reducer.fit_transform(embeddings).astype(np.float32)
+    return np.asarray(reducer.fit_transform(embeddings)).astype(np.float32)
 
 
 def cluster_hdbscan(embeddings_reduced: np.ndarray, config: dict) -> np.ndarray:
@@ -97,7 +97,7 @@ def label_clusters_with_llm(
             options={"temperature": config["llm"]["temperature"]},
         )
         try:
-            parsed = json.loads(response.message.content)
+            parsed = json.loads(response.message.content)  # type: ignore[union-attr]
         except json.JSONDecodeError:
             parsed = {
                 "stage_name": f"CLUSTER_{cluster_id}",

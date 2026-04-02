@@ -34,14 +34,14 @@ def test_reduce_dimensions_output_shape():
 
 
 def test_hdbscan_returns_valid_labels():
-    X, _ = make_blobs(n_samples=200, centers=4, n_features=5, random_state=42)
+    X, _ = make_blobs(n_samples=200, centers=4, n_features=5, random_state=42)  # type: ignore[misc]
     labels = cluster_hdbscan(X.astype(np.float32), CONFIG)
     assert len(labels) == 200
     assert all(l >= -1 for l in labels)
 
 
 def test_kmeans_returns_n_clusters():
-    X, _ = make_blobs(n_samples=150, centers=3, n_features=5, random_state=42)
+    X, _ = make_blobs(n_samples=150, centers=3, n_features=5, random_state=42)  # type: ignore[misc]
     labels = cluster_kmeans(X.astype(np.float32), n_clusters=3, config=CONFIG)
     assert len(labels) == 150
     assert len(set(labels)) == 3
