@@ -17,7 +17,7 @@ def load_raw(config: dict) -> pd.DataFrame:
 
 
 def filter_addiction_related(df: pd.DataFrame, config: dict) -> pd.DataFrame:
-    """Keep rows matching addiction conditions (substring) OR addiction drugs (exact, case-insensitive)."""
+    """Keep rows matching addiction conditions (substring) OR addiction drugs (substring, case-insensitive)."""
     conditions = [c.lower() for c in config["filter"]["addiction_conditions"]]
     drugs = [d.lower() for d in config["filter"]["addiction_drugs"]]
 
@@ -25,7 +25,7 @@ def filter_addiction_related(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     drug_col = df["drugName"].fillna("").str.lower()
 
     condition_mask = cond_col.apply(lambda x: any(c in x for c in conditions))
-    drug_mask = drug_col.isin(drugs)
+    drug_mask = drug_col.apply(lambda x: any(d in x for d in drugs))
 
     return df[condition_mask | drug_mask].reset_index(drop=True)
 
@@ -44,10 +44,15 @@ def run_eda(df: pd.DataFrame) -> None:
     """Print exploratory statistics to stderr."""
     print(f"\n=== EDA ===", file=sys.stderr)
     print(f"Total reviews: {len(df)}", file=sys.stderr)
-    print(f"Date range: {df['date_parsed'].min().date()} to {df['date_parsed'].max().date()}", file=sys.stderr)
+    min_date = df['date_parsed'].min()
+    max_date = df['date_parsed'].max()
+    date_range = f"{min_date.date()} to {max_date.date()}" if pd.notna(min_date) and pd.notna(max_date) else "unknown"
+    print(f"Date range: {date_range}", file=sys.stderr)
     print(f"Unique drugs: {df['drugName'].nunique()}", file=sys.stderr)
     print(f"Unique conditions: {df['condition'].nunique()}", file=sys.stderr)
-    print(f"Year-quarter range: {df['year_quarter'].min()} to {df['year_quarter'].max()}", file=sys.stderr)
+    valid_yq = df['year_quarter'].dropna().loc[~df['year_quarter'].str.startswith('nan', na=True)]
+    yq_range = f"{valid_yq.min()} to {valid_yq.max()}" if len(valid_yq) > 0 else "unknown"
+    print(f"Year-quarter range: {yq_range}", file=sys.stderr)
     print(f"\nTop 10 drugs by review count:", file=sys.stderr)
     print(df["drugName"].value_counts().head(10).to_string(), file=sys.stderr)
     print(f"\nTop conditions:", file=sys.stderr)

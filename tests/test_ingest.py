@@ -2,7 +2,9 @@ import pandas as pd
 import pytest
 import os
 import tempfile
-from src.ingest import load_raw, filter_addiction_related, extract_temporal_features
+import io
+from unittest.mock import patch
+from src.ingest import load_raw, filter_addiction_related, extract_temporal_features, run_eda
 
 TSV_CONTENT_A = (
     "\tdrugName\tcondition\treview\trating\tdate\tusefulCount\n"
@@ -52,6 +54,8 @@ def test_filter_includes_condition_match():
     ])
     result = filter_addiction_related(df, FILTER_CONFIG)
     assert len(result) == 1
+    assert result.iloc[0]["drugName"] == "Drug X"
+    assert result.iloc[0]["condition"] == "Opiate Dependence"
 
 def test_filter_includes_drug_match():
     df = make_df([
@@ -59,6 +63,7 @@ def test_filter_includes_drug_match():
     ])
     result = filter_addiction_related(df, FILTER_CONFIG)
     assert len(result) == 1
+    assert result.iloc[0]["drugName"] == "Buprenorphine"
 
 def test_filter_excludes_unrelated():
     df = make_df([
@@ -89,3 +94,28 @@ def test_temporal_features_parse_date():
     assert result.iloc[0]["quarter"] == 4
     assert result.iloc[0]["year_quarter"] == "2013-Q4"
     assert result.iloc[1]["year_quarter"] == "2016-Q1"
+
+
+def test_filter_includes_drug_substring_match():
+    """Combo drug names like 'Buprenorphine / Naloxone' should match."""
+    df = make_df([
+        ["Buprenorphine / Naloxone", "Pain Management", "review text", 7, "Jan 1, 2015", 3],
+    ])
+    result = filter_addiction_related(df, FILTER_CONFIG)
+    assert len(result) == 1
+    assert result.iloc[0]["drugName"] == "Buprenorphine / Naloxone"
+
+
+def test_run_eda_does_not_crash():
+    df = make_df([
+        ["Drug A", "Opiate Dependence", "review text", 8, "October 6, 2013", 4],
+        ["Drug B", "Alcohol Use Disorder", "other review", 5, "March 15, 2016", 2],
+    ])
+    df = extract_temporal_features(df)
+    # Should not raise — captures stderr output
+    captured = io.StringIO()
+    with patch('sys.stderr', captured):
+        run_eda(df)
+    output = captured.getvalue()
+    assert "Total reviews: 2" in output
+    assert "Date range:" in output
