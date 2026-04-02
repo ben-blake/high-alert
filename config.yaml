@@ -51,7 +51,8 @@ clustering:
 
 llm:
   model: llama-3.1-8b-instant
-  batch_size: 10
+  classify_sample: 300   # reviews to LLM-classify for evaluation comparison
+  prompt_batch: 5        # reviews per API call (batched for speed)
   temperature: 0.1
   spike_sample_size: 20
 
