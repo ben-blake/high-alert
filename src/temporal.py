@@ -132,21 +132,16 @@ def plot_spike_detection(
         if len(matches):
             idx = matches.index[0]
             ax.axvspan(idx - 0.4, idx + 0.4, alpha=0.2, color="#d62728")
-            narrative = narratives.get(quarter, "")
-            if narrative:
-                # Skip preamble lines; use first sentence that is not a heading
-                sentences = [s.strip() for s in narrative.replace("\n", " ").split(".") if len(s.strip()) > 20]
-                short = (sentences[0] + ".") if sentences else quarter
-                on_right = idx > midpoint
-                x_offset = -1.5 if on_right else 1.5
-                ha = "right" if on_right else "left"
-                ax.annotate(
-                    f"↑ {quarter}\n{short[:55]}",
-                    xy=(idx, time_series.loc[idx, "high_count"]),
-                    xytext=(idx + x_offset, time_series.loc[idx, "high_count"] * 1.15),
-                    fontsize=7, color="#d62728", ha=ha,
-                    arrowprops=dict(arrowstyle="->", color="#d62728"),
-                )
+            on_right = idx > midpoint
+            x_offset = -1.5 if on_right else 1.5
+            ha = "right" if on_right else "left"
+            ax.annotate(
+                f"↑ {quarter}",
+                xy=(idx, time_series.loc[idx, "high_count"]),
+                xytext=(idx + x_offset, time_series.loc[idx, "high_count"] * 1.15),
+                fontsize=8, color="#d62728", ha=ha,
+                arrowprops=dict(arrowstyle="->", color="#d62728"),
+            )
 
     tick_step = max(1, len(time_series) // 10)
     ax.set_xticks(range(0, len(time_series), tick_step))
