@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import time
 import numpy as np
 import pandas as pd
 import umap
@@ -135,6 +136,9 @@ def label_clusters_with_llm(
                 "risk_level": "MODERATE",
             }
         results[int(cluster_id)] = parsed
+        delay = config["llm"].get("api_delay", 0)
+        if delay and cluster_id != unique_clusters[-1]:
+            time.sleep(delay)
 
     return results
 

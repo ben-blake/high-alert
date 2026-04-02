@@ -53,6 +53,7 @@ llm:
   model: llama-3.1-8b-instant
   classify_sample: 300   # reviews to LLM-classify for evaluation comparison
   prompt_batch: 5        # reviews per API call (batched for speed)
+  api_delay: 7           # seconds between API calls (6000 TPM / ~650 tokens/call = 9 calls/min)
   temperature: 0.1
   spike_sample_size: 20
 

@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import time
 import pandas as pd
 from dotenv import load_dotenv
 from groq import Groq
@@ -68,10 +69,13 @@ def batch_classify_llm(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     texts = sample_df["clean_review"].tolist()
     indices = sample_df.index.tolist()
 
+    delay = config["llm"].get("api_delay", 0)
     all_results: list = []
     for i in tqdm(range(0, len(texts), prompt_batch), desc="LLM classification"):
         batch = texts[i : i + prompt_batch]
         all_results.extend(classify_with_llm(batch, config))
+        if delay and i + prompt_batch < len(texts):
+            time.sleep(delay)
 
     for idx, result in zip(indices, all_results):
         df.at[idx, "llm_risk"] = result.get("risk_level", "MODERATE")

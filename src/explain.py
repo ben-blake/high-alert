@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import time
 import pandas as pd
 from dotenv import load_dotenv
 from groq import Groq
@@ -68,6 +69,9 @@ def generate_cluster_summaries(
         sections.append(f"**Reviews:** {count} ({pct:.1f}% of corpus) | **Risk:** {stage_info.get('risk_level', 'MODERATE')}\n")
         sections.append(response.choices[0].message.content.strip())  # type: ignore[union-attr]
         sections.append("")
+        delay = config["llm"].get("api_delay", 0)
+        if delay:
+            time.sleep(delay)
 
     return "\n\n".join(sections)
 
