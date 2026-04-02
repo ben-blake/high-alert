@@ -83,8 +83,8 @@ def test_filter_deduplicates_union():
 
 def test_temporal_features_parse_date():
     df = make_df([
-        ["Drug A", "Opiate Dependence", "text", 8, "October 6, 2013", 4],
-        ["Drug B", "Alcohol Use Disorder", "text", 5, "March 15, 2016", 2],
+        ["Drug A", "Opiate Dependence", "text", 8, "06-Oct-13", 4],
+        ["Drug B", "Alcohol Use Disorder", "text", 5, "15-Mar-16", 2],
     ])
     result = extract_temporal_features(df)
     assert "year" in result.columns

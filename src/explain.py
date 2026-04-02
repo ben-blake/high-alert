@@ -42,7 +42,7 @@ def generate_cluster_summaries(
 
     for cluster_id_str, stage_info in cluster_stages.items():
         stage_name = stage_info["stage_name"]
-        cluster_df = df[df["stage_name"] == stage_name]
+        cluster_df = df[df["cluster_id"] == int(cluster_id_str)]
         count = len(cluster_df)
         pct = (count / total) * 100
 

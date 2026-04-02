@@ -67,9 +67,16 @@ Risk level criteria:
 - LOW: stable, long-term success, confident in sobriety
 
 Note: if reviews are mixed (some hopeful, some struggling), reflect that in the risk level.
+
+CRITICAL — stage_name rules:
+- Must be UNIQUE and SPECIFIC to this cluster's dominant substance + behavior pattern
+- Format: SUBSTANCE_BEHAVIOR (e.g., SMOKING_LONG_TERM_SUCCESS, SUBOXONE_EARLY_TAPER, NALTREXONE_STABLE, ALCOHOL_WITHDRAWAL_CRISIS, OPIOID_MAINTENANCE_STABLE)
+- NEVER use a bare TTM stage name alone (MAINTENANCE, ACTION, etc.) — always qualify with substance or pattern
+- If the group spans multiple substances, pick the most dominant one
+
 Respond with ONLY valid JSON, no other text:
 {{
-  "stage_name": "CONCISE_STAGE_NAME_IN_CAPS",
+  "stage_name": "SUBSTANCE_BEHAVIOR_IN_CAPS",
   "ttm_stage": "One of: Pre-Contemplation, Contemplation, Preparation, Action, Maintenance, Relapse",
   "description": "One sentence: what specific behavioral pattern defines this group?",
   "risk_level": "One of: HIGH, MODERATE, LOW"

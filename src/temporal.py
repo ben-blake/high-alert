@@ -45,7 +45,7 @@ def detect_spikes(
     window = config["temporal"]["spike_window"]
     threshold = config["temporal"]["spike_threshold"]
 
-    high_df = df[df["risk_level"] == "HIGH"]
+    high_df = df[df["baseline_risk"] == "HIGH"]
     counts = high_df.groupby("year_quarter").size().reset_index(name="high_count")
     counts = counts.sort_values("year_quarter").reset_index(drop=True)
 
@@ -91,7 +91,7 @@ def generate_spike_narratives(
     narratives: dict[str, str] = {}
 
     for quarter in spike_quarters:
-        mask = (df["year_quarter"] == quarter) & (df["risk_level"] == "HIGH")
+        mask = (df["year_quarter"] == quarter) & (df["baseline_risk"] == "HIGH")
         quarter_df = df.loc[mask].sort_values(by="usefulCount", ascending=False).head(n_samples)  # type: ignore[call-overload]
 
         reviews_text = "\n".join(
@@ -126,6 +126,7 @@ def plot_spike_detection(
         color="#d62728", linewidth=2, marker="o", markersize=4, label="HIGH-risk reviews",
     )
 
+    midpoint = len(time_series) / 2
     for quarter in spike_quarters:
         matches = time_series[time_series["year_quarter"] == quarter]
         if len(matches):
@@ -133,12 +134,17 @@ def plot_spike_detection(
             ax.axvspan(idx - 0.4, idx + 0.4, alpha=0.2, color="#d62728")
             narrative = narratives.get(quarter, "")
             if narrative:
-                short = narrative.split(".")[0] + "."
+                # Skip preamble lines; use first sentence that is not a heading
+                sentences = [s.strip() for s in narrative.replace("\n", " ").split(".") if len(s.strip()) > 20]
+                short = (sentences[0] + ".") if sentences else quarter
+                on_right = idx > midpoint
+                x_offset = -1.5 if on_right else 1.5
+                ha = "right" if on_right else "left"
                 ax.annotate(
-                    f"↑ {quarter}\n{short[:60]}",
+                    f"↑ {quarter}\n{short[:55]}",
                     xy=(idx, time_series.loc[idx, "high_count"]),
-                    xytext=(idx + 1, time_series.loc[idx, "high_count"] * 1.1),
-                    fontsize=7, color="#d62728",
+                    xytext=(idx + x_offset, time_series.loc[idx, "high_count"] * 1.15),
+                    fontsize=7, color="#d62728", ha=ha,
                     arrowprops=dict(arrowstyle="->", color="#d62728"),
                 )
 

@@ -33,7 +33,7 @@ def filter_addiction_related(df: pd.DataFrame, config: dict) -> pd.DataFrame:
 def extract_temporal_features(df: pd.DataFrame) -> pd.DataFrame:
     """Parse date column and add year, quarter, year_quarter columns."""
     df = df.copy()
-    df["date_parsed"] = pd.to_datetime(df["date"], format="%B %d, %Y", errors="coerce")
+    df["date_parsed"] = pd.to_datetime(df["date"], format="%d-%b-%y", errors="coerce")
     df["year"] = df["date_parsed"].dt.year
     df["quarter"] = df["date_parsed"].dt.quarter
     df["year_quarter"] = df["year"].astype(str) + "-Q" + df["quarter"].astype(str)

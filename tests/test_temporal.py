@@ -18,6 +18,9 @@ def make_temporal_df():
         "risk_level": (["HIGH"] * 7 + ["LOW"] * 3) +
                       (["HIGH"] * 4 + ["LOW"] * 6) +
                       (["HIGH"] * 5 + ["LOW"] * 5),
+        "baseline_risk": (["HIGH"] * 7 + ["LOW"] * 3) +
+                         (["HIGH"] * 4 + ["LOW"] * 6) +
+                         (["HIGH"] * 5 + ["LOW"] * 5),
         "drugName": ["Suboxone"] * 30,
         "rating": [7.0] * 30,
         "usefulCount": list(range(30)),
@@ -46,9 +49,9 @@ def test_detect_spikes_finds_known_spike():
     df_rows = []
     for q, count in zip(quarters, high_counts):
         for _ in range(count):
-            df_rows.append({"year_quarter": q, "risk_level": "HIGH", "usefulCount": 1, "clean_review": "relapsed"})
+            df_rows.append({"year_quarter": q, "baseline_risk": "HIGH", "usefulCount": 1, "clean_review": "relapsed"})
         for _ in range(5):
-            df_rows.append({"year_quarter": q, "risk_level": "LOW", "usefulCount": 1, "clean_review": "sober"})
+            df_rows.append({"year_quarter": q, "baseline_risk": "LOW", "usefulCount": 1, "clean_review": "sober"})
     df = pd.DataFrame(df_rows)
     config = {"temporal": {"spike_window": 4, "spike_threshold": 2.0}}
     _, spike_quarters = detect_spikes(df, config)
