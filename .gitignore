@@ -1,0 +1,9 @@
+data/raw/
+data/processed/
+outputs/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/

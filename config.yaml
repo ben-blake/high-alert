@@ -1,0 +1,95 @@
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  train_file: drugsComTrain_raw.tsv
+  test_file: drugsComTest_raw.tsv
+  filtered_file: reviews_filtered.parquet
+  embeddings_file: embeddings.npy
+  embedding_index_file: embedding_index.json
+
+filter:
+  addiction_conditions:
+    - "opiate dependence"
+    - "opioid dependence"
+    - "alcohol use disorder"
+    - "benzodiazepine withdrawal"
+    - "cocaine dependence"
+    - "substance abuse"
+    - "drug dependence"
+    - "heroin dependence"
+    - "opioid withdrawal"
+    - "alcohol withdrawal"
+    - "nicotine dependence"
+    - "methamphetamine dependence"
+  addiction_drugs:
+    - "buprenorphine"
+    - "methadone"
+    - "naltrexone"
+    - "suboxone"
+    - "vivitrol"
+    - "disulfiram"
+    - "acamprosate"
+    - "naloxone"
+    - "subutex"
+    - "zubsolv"
+    - "varenicline"
+    - "chantix"
+    - "campral"
+
+embeddings:
+  model: all-MiniLM-L6-v2
+  batch_size: 64
+
+clustering:
+  umap_n_components_cluster: 5
+  umap_n_components_viz: 2
+  umap_n_neighbors: 15
+  umap_min_dist: 0.1
+  hdbscan_min_cluster_size: 30
+  hdbscan_min_samples: 5
+  kmeans_random_seed: 42
+  umap_random_seed: 42
+  stage_sample_size: 10
+
+llm:
+  model: llama3.1:8b
+  batch_size: 10
+  temperature: 0.1
+  spike_sample_size: 20
+
+baseline:
+  high_risk_patterns:
+    - "relapsed"
+    - "relapse"
+    - "overdosed"
+    - "overdose"
+    - "gave up"
+    - "stopped working"
+    - "addicted again"
+    - "using again"
+    - "back to using"
+    - "failed"
+    - "hopeless"
+    - "suicidal"
+    - "want to die"
+  low_risk_patterns:
+    - "sober"
+    - "sobriety"
+    - "clean for"
+    - "changed my life"
+    - "life-changing"
+    - "highly recommend"
+    - "in recovery"
+    - "miracle"
+    - "saved my life"
+
+temporal:
+  spike_window: 4
+  spike_threshold: 2.0
+
+paths:
+  figures: outputs/figures
+  tables: outputs/tables
+  summaries: outputs/summaries
+
+random_seed: 42
