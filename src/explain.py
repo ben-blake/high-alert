@@ -3,7 +3,10 @@ import os
 import sys
 import json
 import pandas as pd
-import ollama
+from dotenv import load_dotenv
+from groq import Groq
+
+load_dotenv()
 
 SUMMARY_PROMPT = """You are a public health data analyst preparing a briefing for a state health department.
 Below is information about one behavioral cluster identified from {total} patient reviews of addiction treatment medications.
@@ -55,14 +58,15 @@ def generate_cluster_summaries(
             reviews=reviews_text,
         )
         print(f"Generating summary for stage {stage_name}...", file=sys.stderr)
-        response = ollama.chat(
+        client = Groq()
+        response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": temperature},
+            temperature=temperature,
         )
         sections.append(f"## {stage_name} ({stage_info.get('ttm_stage', '')})")
         sections.append(f"**Reviews:** {count} ({pct:.1f}% of corpus) | **Risk:** {stage_info.get('risk_level', 'MODERATE')}\n")
-        sections.append(response["message"]["content"].strip())  # type: ignore[index]
+        sections.append(response.choices[0].message.content.strip())  # type: ignore[union-attr]
         sections.append("")
 
     return "\n\n".join(sections)

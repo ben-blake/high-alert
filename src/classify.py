@@ -1,10 +1,13 @@
 """LLM-based risk classification with stage labels and rationale."""
 import json
+import os
 import sys
-from typing import Any, Mapping, cast
 import pandas as pd
-import ollama
+from dotenv import load_dotenv
+from groq import Groq
 from tqdm import tqdm
+
+load_dotenv()
 
 CLASSIFY_PROMPT = """You are a public health data analyst. Read this patient review of an addiction treatment medication.
 Classify the review into a recovery stage and risk level.
@@ -25,16 +28,16 @@ def classify_with_llm(texts: list, config: dict) -> list:
     temperature = config["llm"]["temperature"]
     results = []
 
+    client = Groq()
     for text in texts:
         prompt = CLASSIFY_PROMPT.format(review=text[:500])
-        raw = ollama.chat(
+        response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": temperature},
+            temperature=temperature,
         )
-        response = cast(Mapping[str, Any], raw)
         try:
-            parsed = json.loads(response["message"]["content"])
+            parsed = json.loads(response.choices[0].message.content or "")
             if "risk_level" not in parsed:
                 raise ValueError("Missing risk_level")
         except (json.JSONDecodeError, ValueError):

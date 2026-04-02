@@ -6,7 +6,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import ollama
+from dotenv import load_dotenv
+from groq import Groq
+
+load_dotenv()
 
 
 def compute_stage_distribution(df: pd.DataFrame) -> pd.DataFrame:
@@ -98,12 +101,13 @@ def generate_spike_narratives(
             n=len(quarter_df), quarter=quarter, reviews=reviews_text
         )
         print(f"Generating narrative for spike quarter {quarter}...", file=sys.stderr)
-        response = ollama.chat(
+        client = Groq()
+        response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": temperature},
+            temperature=temperature,
         )
-        narratives[quarter] = response["message"]["content"].strip()  # type: ignore[index]
+        narratives[quarter] = response.choices[0].message.content.strip()  # type: ignore[union-attr]
 
     return narratives
 

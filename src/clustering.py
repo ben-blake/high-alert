@@ -1,13 +1,17 @@
 """Dimensionality reduction and clustering for recovery stage discovery."""
+import os
 import sys
 import json
 import numpy as np
 import pandas as pd
 import umap
 import hdbscan
-import ollama
+from dotenv import load_dotenv
+from groq import Groq
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
+
+load_dotenv()
 
 
 def reduce_dimensions(embeddings: np.ndarray, n_components: int, config: dict) -> np.ndarray:
@@ -108,15 +112,16 @@ def label_clusters_with_llm(
             reviews=reviews_text,
         )
         print(f"Labeling cluster {cluster_id}... ", end="", flush=True, file=sys.stderr)
-        chunks = ollama.chat(
+        client = Groq()
+        stream = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": config["llm"]["temperature"]},
+            temperature=config["llm"]["temperature"],
             stream=True,
         )
         content = ""
-        for chunk in chunks:  # type: ignore[union-attr]
-            token = chunk["message"]["content"]  # type: ignore[index]
+        for chunk in stream:
+            token = chunk.choices[0].delta.content or ""
             content += token
             print(token, end="", flush=True, file=sys.stderr)
         print(file=sys.stderr)

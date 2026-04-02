@@ -15,16 +15,19 @@ Instead of predefined binary risk labels, this system *discovers* recovery stage
 
 ### Prerequisites
 - Python 3.11+
-- [Ollama](https://ollama.com) installed and running locally with `llama3.1:8b`:
-  ```bash
-  ollama pull llama3.1:8b
-  ```
+- A free [Groq API key](https://console.groq.com) for LLM inference
 
 ### Install dependencies
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### Configure API key
+```bash
+cp .env.example .env
+# Edit .env and set GROQ_API_KEY=your_key_here
 ```
 
 ### Download dataset
