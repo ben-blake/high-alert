@@ -90,14 +90,21 @@ def label_clusters_with_llm(
             n=len(sample_reviews),
             reviews="\n".join(f"- {r}" for r in sample_reviews),
         )
-        print(f"Labeling cluster {cluster_id}...", file=sys.stderr)
-        response = ollama.chat(
+        print(f"Labeling cluster {cluster_id}... ", end="", flush=True, file=sys.stderr)
+        chunks = ollama.chat(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": config["llm"]["temperature"]},
+            stream=True,
         )
+        content = ""
+        for chunk in chunks:  # type: ignore[union-attr]
+            token = chunk["message"]["content"]  # type: ignore[index]
+            content += token
+            print(token, end="", flush=True, file=sys.stderr)
+        print(file=sys.stderr)
         try:
-            parsed = json.loads(response["message"]["content"])  # type: ignore[index]
+            parsed = json.loads(content)
         except json.JSONDecodeError:
             parsed = {
                 "stage_name": f"CLUSTER_{cluster_id}",

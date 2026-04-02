@@ -9,7 +9,6 @@ data:
 
 filter:
   addiction_conditions:
-    # Verified against dataset — these are the exact condition names that appear
     - "opiate dependence"        # 1477 reviews
     - "alcohol dependence"       # 518 reviews (dataset uses "dependence" not "use disorder")
     - "opiate withdrawal"        # 434 reviews (dataset uses "opiate" not "opioid")
@@ -48,7 +47,7 @@ clustering:
   hdbscan_min_samples: 5
   kmeans_random_seed: 42
   umap_random_seed: 42
-  stage_sample_size: 10
+  stage_sample_size: 5
 
 llm:
   model: llama3.1:8b
@@ -93,10 +92,10 @@ baseline:
     - "clean and sober"
     - "years sober"
     - "months sober"
-    - "smoke free"       # 477 occurrences, 95% in high-rated reviews
-    - "quit smoking"     # 410 occurrences, 86% in high-rated reviews
-    - "stopped smoking"  # 124 occurrences, 92% in high-rated reviews
-    - "no more cravings" # unambiguously positive
+    - "smoke free"
+    - "quit smoking"
+    - "stopped smoking"
+    - "no more cravings"
     - "cravings are gone"
 
 temporal:

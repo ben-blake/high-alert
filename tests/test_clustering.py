@@ -69,7 +69,7 @@ def test_label_clusters_with_llm_mock():
     })
     cluster_labels = np.array([0] * 15 + [1] * 15)
 
-    mock_response = {"message": {"content": MOCK_LLM_RESPONSE}}
+    mock_response = iter([{"message": {"content": MOCK_LLM_RESPONSE}}])
 
     with patch("src.clustering.ollama.chat", return_value=mock_response):
         result = label_clusters_with_llm(df, cluster_labels, embeddings, CONFIG)
