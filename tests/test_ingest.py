@@ -6,34 +6,34 @@ import io
 from unittest.mock import patch
 from src.ingest import load_raw, filter_addiction_related, extract_temporal_features, run_eda
 
-TSV_CONTENT_A = (
-    "\tdrugName\tcondition\treview\trating\tdate\tusefulCount\n"
-    "0\tDrug A\tOpiate Dependence\t\"Great drug\"\t9\tJanuary 1, 2015\t10\n"
-    "1\tDrug B\tDepression\t\"Helped me\"\t7\tMarch 5, 2016\t5\n"
+CSV_CONTENT_A = (
+    ",drugName,condition,review,rating,date,usefulCount\n"
+    "0,Drug A,Opiate Dependence,Great drug,9,\"January 1, 2015\",10\n"
+    "1,Drug B,Depression,Helped me,7,\"March 5, 2016\",5\n"
 )
-TSV_CONTENT_B = (
-    "\tdrugName\tcondition\treview\trating\tdate\tusefulCount\n"
-    "2\tDrug C\tAlcohol Use Disorder\t\"Life saver\"\t10\tJune 3, 2017\t20\n"
+CSV_CONTENT_B = (
+    ",drugName,condition,review,rating,date,usefulCount\n"
+    "2,Drug C,Alcohol Use Disorder,Life saver,10,\"June 3, 2017\",20\n"
 )
 
 @pytest.fixture
 def raw_dir(tmp_path):
-    (tmp_path / "drugsComTrain_raw.tsv").write_text(TSV_CONTENT_A)
-    (tmp_path / "drugsComTest_raw.tsv").write_text(TSV_CONTENT_B)
+    (tmp_path / "drugsComTrain_raw.csv").write_text(CSV_CONTENT_A)
+    (tmp_path / "drugsComTest_raw.csv").write_text(CSV_CONTENT_B)
     return str(tmp_path)
 
 def test_load_raw_merges_train_test(raw_dir):
     config = {"data": {"raw_dir": raw_dir,
-                       "train_file": "drugsComTrain_raw.tsv",
-                       "test_file": "drugsComTest_raw.tsv"}}
+                       "train_file": "drugsComTrain_raw.csv",
+                       "test_file": "drugsComTest_raw.csv"}}
     df = load_raw(config)
     assert len(df) == 3
     assert set(df.columns) >= {"drugName", "condition", "review", "rating", "date", "usefulCount"}
 
 def test_load_raw_resets_index(raw_dir):
     config = {"data": {"raw_dir": raw_dir,
-                       "train_file": "drugsComTrain_raw.tsv",
-                       "test_file": "drugsComTest_raw.tsv"}}
+                       "train_file": "drugsComTrain_raw.csv",
+                       "test_file": "drugsComTest_raw.csv"}}
     df = load_raw(config)
     assert list(df.index) == list(range(len(df)))
 
