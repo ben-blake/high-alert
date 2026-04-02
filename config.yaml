@@ -43,8 +43,8 @@ clustering:
   umap_n_components_viz: 2
   umap_n_neighbors: 15
   umap_min_dist: 0.1
-  hdbscan_min_cluster_size: 75
-  hdbscan_min_samples: 5
+  hdbscan_min_cluster_size: 85
+  hdbscan_min_samples: 10
   kmeans_random_seed: 42
   umap_random_seed: 42
   stage_sample_size: 5

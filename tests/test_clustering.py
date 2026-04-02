@@ -66,6 +66,7 @@ def test_label_clusters_with_llm_mock():
     df = pd.DataFrame({
         "clean_review": [f"review {i}" for i in range(n)],
         "drugName": ["Suboxone"] * n,
+        "rating": [8] * n,
     })
     cluster_labels = np.array([0] * 15 + [1] * 15)
 

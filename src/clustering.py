@@ -42,18 +42,31 @@ def cluster_kmeans(embeddings_reduced: np.ndarray, n_clusters: int, config: dict
     return km.fit_predict(embeddings_reduced)
 
 
-STAGE_LABEL_PROMPT = """You are analyzing patient reviews of addiction treatment medications.
-Below are {n} representative reviews from one behavioral cluster.
+STAGE_LABEL_PROMPT = """You are a public health analyst classifying addiction treatment patient reviews.
+Below are {n} reviews (with patient ratings 1-10) from one group discovered through semantic clustering.
 
 Reviews:
 {reviews}
 
-Based on these reviews, identify the recovery stage this cluster represents.
-Respond with ONLY valid JSON in this exact format:
+Classify this group using the Transtheoretical Model (TTM). Use the full spectrum:
+- Pre-Contemplation: not yet considering change, in denial, or unaware of need
+- Contemplation: aware of problem, thinking about change, ambivalent
+- Preparation: committed to change, early medication use, may still have slip-ups
+- Action: actively working to change, within first 6 months, effortful
+- Maintenance: sustained change 6+ months, stable, confident
+- Relapse: returned to prior behavior after a period of change, discouraged
+
+Risk level criteria:
+- HIGH: mentions relapse, overdose, giving up, hopeless, still using, can't stop
+- MODERATE: active struggle, uncertain, side effects threatening adherence, early recovery
+- LOW: stable, long-term success, confident in sobriety
+
+Note: if reviews are mixed (some hopeful, some struggling), reflect that in the risk level.
+Respond with ONLY valid JSON, no other text:
 {{
-  "stage_name": "SHORT_STAGE_NAME_IN_CAPS",
+  "stage_name": "CONCISE_STAGE_NAME_IN_CAPS",
   "ttm_stage": "One of: Pre-Contemplation, Contemplation, Preparation, Action, Maintenance, Relapse",
-  "description": "One sentence describing this group of patients.",
+  "description": "One sentence: what specific behavioral pattern defines this group?",
   "risk_level": "One of: HIGH, MODERATE, LOW"
 }}"""
 
@@ -84,11 +97,15 @@ def label_clusters_with_llm(
         sims = cosine_similarity(cluster_embeddings, centroid).flatten()
         top_n = min(n_samples, len(cluster_indices))
         top_idx = cluster_indices[np.argsort(sims)[-top_n:][::-1]]
-        sample_reviews = df.iloc[top_idx]["clean_review"].tolist()
+        sample_rows = df.iloc[top_idx]
+        reviews_text = "\n".join(
+            f"- (rating: {row['rating']}/10) {row['clean_review'][:300]}"
+            for _, row in sample_rows.iterrows()
+        )
 
         prompt = STAGE_LABEL_PROMPT.format(
-            n=len(sample_reviews),
-            reviews="\n".join(f"- {r}" for r in sample_reviews),
+            n=len(sample_rows),
+            reviews=reviews_text,
         )
         print(f"Labeling cluster {cluster_id}... ", end="", flush=True, file=sys.stderr)
         chunks = ollama.chat(
