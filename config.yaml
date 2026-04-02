@@ -9,18 +9,15 @@ data:
 
 filter:
   addiction_conditions:
-    - "opiate dependence"
-    - "opioid dependence"
-    - "alcohol use disorder"
-    - "benzodiazepine withdrawal"
-    - "cocaine dependence"
-    - "substance abuse"
-    - "drug dependence"
-    - "heroin dependence"
-    - "opioid withdrawal"
-    - "alcohol withdrawal"
-    - "nicotine dependence"
-    - "methamphetamine dependence"
+    # Verified against dataset — these are the exact condition names that appear
+    - "opiate dependence"        # 1477 reviews
+    - "alcohol dependence"       # 518 reviews (dataset uses "dependence" not "use disorder")
+    - "opiate withdrawal"        # 434 reviews (dataset uses "opiate" not "opioid")
+    - "smoking cessation"        # 2440 reviews (nicotine addiction treatment)
+    - "alcohol withdrawal"       # 285 reviews
+    - "benzodiazepine withdrawal" # 24 reviews
+    - "opioid overdose"          # 15 reviews
+    - "opiate adjunct"           # 13 reviews
   addiction_drugs:
     - "buprenorphine"
     - "methadone"
@@ -30,11 +27,13 @@ filter:
     - "disulfiram"
     - "acamprosate"
     - "naloxone"
+    - "narcan"       # brand name for naloxone (not caught by "naloxone" substring)
     - "subutex"
     - "zubsolv"
     - "varenicline"
     - "chantix"
     - "campral"
+    - "nicotine"     # nicotine replacement therapy (patch, gum, lozenge)
 
 embeddings:
   model: all-MiniLM-L6-v2
@@ -72,6 +71,13 @@ baseline:
     - "hopeless"
     - "suicidal"
     - "want to die"
+    - "still using"
+    - "can't stop"
+    - "cannot stop"
+    - "can't quit"
+    - "cannot quit"
+    - "slipped"
+    - "not sober"
   low_risk_patterns:
     - "sober"
     - "sobriety"
@@ -82,6 +88,11 @@ baseline:
     - "in recovery"
     - "miracle"
     - "saved my life"
+    - "years clean"
+    - "months clean"
+    - "clean and sober"
+    - "years sober"
+    - "months sober"
 
 temporal:
   spike_window: 4
