@@ -88,9 +88,8 @@ def generate_spike_narratives(
     narratives: dict[str, str] = {}
 
     for quarter in spike_quarters:
-        quarter_df = df[
-            (df["year_quarter"] == quarter) & (df["risk_level"] == "HIGH")
-        ].sort_values("usefulCount", ascending=False).head(n_samples)
+        mask = (df["year_quarter"] == quarter) & (df["risk_level"] == "HIGH")
+        quarter_df = df.loc[mask].sort_values(by="usefulCount", ascending=False).head(n_samples)  # type: ignore[call-overload]
 
         reviews_text = "\n".join(
             f"- {row['clean_review'][:200]}" for _, row in quarter_df.iterrows()
