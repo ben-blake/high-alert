@@ -58,14 +58,14 @@ def generate_cluster_summaries(
             risk_level=stage_info.get("risk_level", "MODERATE"),
             reviews=reviews_text,
         )
-        print(f"Generating summary for stage {stage_name}...", file=sys.stderr)
+        print(f"Generating summary for cluster {cluster_id_str} ({stage_name})...", file=sys.stderr)
         client = Groq()
         response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=temperature,
         )
-        sections.append(f"## {stage_name} ({stage_info.get('ttm_stage', '')})")
+        sections.append(f"## Cluster {cluster_id_str}: {stage_name} ({stage_info.get('ttm_stage', '')})")
         sections.append(f"**Reviews:** {count} ({pct:.1f}% of corpus) | **Risk:** {stage_info.get('risk_level', 'MODERATE')}\n")
         sections.append(response.choices[0].message.content.strip())  # type: ignore[union-attr]
         sections.append("")

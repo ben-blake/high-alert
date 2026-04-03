@@ -162,7 +162,15 @@ def label_clusters_with_llm(
         print(file=sys.stderr)
         try:
             parsed = json.loads(content)
-            used_names.append(parsed.get("stage_name", ""))
+            # Guarantee uniqueness in Python — LLM may still produce duplicates
+            base_name = parsed.get("stage_name", f"CLUSTER_{cluster_id}")
+            unique_name = base_name
+            suffix = 2
+            while unique_name in used_names:
+                unique_name = f"{base_name}_{suffix}"
+                suffix += 1
+            parsed["stage_name"] = unique_name
+            used_names.append(unique_name)
         except json.JSONDecodeError:
             parsed = {
                 "stage_name": f"CLUSTER_{cluster_id}",
