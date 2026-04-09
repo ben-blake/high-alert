@@ -1,6 +1,6 @@
 data/raw/
-data/processed/
-outputs/
+data/processed/embedding_index.json
+data/processed/embeddings.npy
 .env
 __pycache__/
 *.pyc
