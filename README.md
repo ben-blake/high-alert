@@ -2,6 +2,7 @@
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 
+**Application**: [https://high-alert.streamlit.app](https://high-alert.streamlit.app)
 **Video**: [https://vimeo.com/1180195741](https://vimeo.com/1180195741)
 
 AI-driven pipeline for detecting substance abuse risk signals from addiction treatment drug reviews. Discovers recovery stages from patient language using HDBSCAN clustering, validates them against the Transtheoretical Model (TTM), and surfaces temporal risk signals for public health analysts.
