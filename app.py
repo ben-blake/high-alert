@@ -63,14 +63,14 @@ with tab1:
     col4.metric("Recovery Stages", df["stage_name"].nunique())
 
     st.subheader("Risk Level Distribution")
-    risk_counts = df["risk_level"].value_counts().reset_index()
-    risk_counts.columns = ["risk_level", "count"]
+    risk_counts = df["baseline_risk"].value_counts().reset_index()
+    risk_counts.columns = ["baseline_risk", "count"]
     fig, ax = plt.subplots(figsize=(6, 3))
     colors = {"HIGH": "#d62728", "MODERATE": "#ff7f0e", "LOW": "#2ca02c"}
     ax.bar(
-        risk_counts["risk_level"],
+        risk_counts["baseline_risk"],
         risk_counts["count"],
-        color=[colors.get(str(r), "#1f77b4") for r in risk_counts["risk_level"]],
+        color=[colors.get(str(r), "#1f77b4") for r in risk_counts["baseline_risk"]],
     )
     ax.set_ylabel("Review Count")
     st.pyplot(fig)
