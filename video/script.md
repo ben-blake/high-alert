@@ -10,7 +10,9 @@
 
 ## Tab 1: Overview
 
-> "So here's the dashboard. About 7,200 reviews of addiction treatment drugs — Suboxone, Chantix, Methadone — going from 2008 to 2017."
+> "So here's the dashboard. About 7,200 reviews of addiction treatment drugs — Suboxone, Chantix, Methadone — going from 2008 to 2017.
+>
+> I built a keyword baseline that flags each review as high, moderate, or low risk. Most reviews are moderate. Only about 6% contain high-risk language."
 
 ---
 
