@@ -154,17 +154,20 @@ with tab4:
 
         if selected_drugs:
             filtered = drug_trends[drug_trends["drugName"].isin(selected_drugs)]
-            all_quarters = sorted(filtered["year_quarter"].unique())
+            all_quarters = sorted(drug_trends["year_quarter"].unique())
+            quarter_to_idx = {q: i for i, q in enumerate(all_quarters)}
             fig, ax = plt.subplots(figsize=(12, 5))
             for drug in selected_drugs:
                 d = filtered[filtered["drugName"] == drug].sort_values(by="year_quarter")  # type: ignore[call-overload]
-                ax.plot(d["year_quarter"], d["median_rating"], label=drug, linewidth=1.5, marker=".")
+                x = [quarter_to_idx[q] for q in d["year_quarter"]]
+                ax.plot(x, d["median_rating"], label=drug, linewidth=1.5, marker=".")
             step = max(1, len(all_quarters) // 10)
             ax.set_xticks(range(0, len(all_quarters), step))
             ax.set_xticklabels(
                 [all_quarters[i] for i in range(0, len(all_quarters), step)],
                 rotation=45, ha="right", fontsize=8,
             )
+            ax.set_xlabel("Quarter")
             ax.set_ylabel("Median Rating (1–10)")
             ax.legend(fontsize=8)
             st.pyplot(fig)
