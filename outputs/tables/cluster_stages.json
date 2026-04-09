@@ -1,0 +1,62 @@
+{
+  "0": {
+    "stage_name": "ZYBAN_QUICK_SUCCESS",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of individuals who achieved quick and sustained success with Zyban, with most reporting long-term abstinence from smoking.",
+    "risk_level": "LOW"
+  },
+  "1": {
+    "stage_name": "VIVITROL_LONG_TERM_SUCCESS",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of individuals who have been successfully using Vivitrol for an extended period, often with long-term sobriety and confidence in their recovery.",
+    "risk_level": "LOW"
+  },
+  "2": {
+    "stage_name": "SUBOXONE_LONG_TERM_SUCCESS",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of patients who have achieved long-term success with Suboxone, with many expressing gratitude and confidence in their sobriety.",
+    "risk_level": "LOW"
+  },
+  "3": {
+    "stage_name": "CHANTIX_QUICK_SUCCESS",
+    "ttm_stage": "Action",
+    "description": "This group consists of individuals who have successfully quit smoking with the help of Chantix, often experiencing rapid reduction in smoking within a short period of time.",
+    "risk_level": "LOW"
+  },
+  "4": {
+    "stage_name": "LIBRIUM_ALCOHOL_WITHDRAWAL_DETOX",
+    "ttm_stage": "Action",
+    "description": "Patients in this group are actively working to change, having recently gone through alcohol withdrawal and receiving Librium as part of their treatment.",
+    "risk_level": "LOW"
+  },
+  "5": {
+    "stage_name": "CAMPRAL_LONG_TERM_SUCCESS",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of individuals who have achieved long-term sobriety with the help of Campral, reporting significant improvements in their mental and physical well-being.",
+    "risk_level": "LOW"
+  },
+  "6": {
+    "stage_name": "CHANTIX_QUICK_SUCCESS_2",
+    "ttm_stage": "Action",
+    "description": "Patients who successfully quit smoking within a short period (3 weeks) after taking Chantix, with minimal side effects and long-term success.",
+    "risk_level": "LOW"
+  },
+  "7": {
+    "stage_name": "CHANTIX_QUICK_SUCCESS_STABLE",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of individuals who have successfully quit smoking with Chantix and have maintained their sobriety for an extended period.",
+    "risk_level": "LOW"
+  },
+  "8": {
+    "stage_name": "CHANTIX_LONG_TERM_SUCCESS",
+    "ttm_stage": "Maintenance",
+    "description": "This group consists of individuals who have successfully quit smoking with Chantix for an extended period, often after multiple failed attempts.",
+    "risk_level": "LOW"
+  },
+  "9": {
+    "stage_name": "CHANTIX_QUICK_SUCCESS_3",
+    "ttm_stage": "Action",
+    "description": "Patients who successfully quit smoking within a short period (2-8 days) using Chantix, often with some side effects.",
+    "risk_level": "LOW"
+  }
+}
